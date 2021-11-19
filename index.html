@@ -10,27 +10,40 @@
 <svg id="my_dataviz" width="800" height="600"></svg>
 <script>
 
-    // The svg
-    var svg = d3.select("svg"),
-      width = +svg.attr("width"),
-      height = +svg.attr("height");
-    
-    // Map and projection
-    var path = d3.geoPath();
-    var projection = d3.geoMercator()
-  	.scale(3000)
-  	.center([-80,35])
-    .translate([width / 2, height / 2]);
-    
-    // Data and color scale
-    var data = d3.map();
+    // create svg element
+    let svg = d3.select("svg");
+    let width = +svg.attr("width");
+    let height = +svg.attr("height");
 
+    // set color scale
+    let colorScale = d3.scaleThreshold()
+    .domain(["A", "B", "C", "D"])
+    .range(["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]);
+    // somehow the first color in range([]) does not show on map
 
-    d3.json("https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson", function(data){
+    // load data from github repo
+    d3.queue()
+    .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson")
+    .await(ready);
+
+    // function ready
+    function ready(error, topo) {
+        // get appropriate projection
+        let projection = d3.geoMercator().fitSize([width, height], topo);
+                
         svg.append("g")
         .selectAll("path")
-        .data(data.features)
-        .enter().append("path").attr("d", d3.geoPath().projection(projection))
-    })
+        .data(topo.features)
+        .enter()
+        .append("path")
+        //draw polygons
+        .attr("d", d3.geoPath().projection(projection))
+        .style("stroke", "#5b6363")
+        .style("stroke-width", 1)
+        .attr("fill", function(d) {
+            return colorScale(d.properties.holc_grade);
+        })
+    }
+
     
     </script>
