@@ -2,48 +2,78 @@
 <meta charset="utf-8">
 
 <!-- Load d3.js -->
-<script src="https://d3js.org/d3.v4.js"></script>
-<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-
-<!-- Create an element where the map will take place -->
-<svg id="my_dataviz" width="800" height="600"></svg>
-<script>
-
-    // create svg element
-    let svg = d3.select("svg");
-    let width = +svg.attr("width");
-    let height = +svg.attr("height");
-
-    // set color scale
-    let colorScale = d3.scaleThreshold()
-    .domain(["A", "B", "C", "D"])
-    .range(["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]);
-    // somehow the first color in range([]) does not show on map
-
-    // load data from github repo
-    d3.queue()
-    .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson")
-    .await(ready);
-
-    // function ready
-    function ready(error, topo) {
-        // get appropriate projection
-        let projection = d3.geoMercator().fitSize([width, height], topo);
-                
-        svg.append("g")
-        .selectAll("path")
-        .data(topo.features)
-        .enter()
-        .append("path")
-        //draw polygons
-        .attr("d", d3.geoPath().projection(projection))
-        .style("stroke", "#5b6363")
-        .style("stroke-width", 1)
-        .attr("fill", function(d) {
-            return colorScale(d.properties.holc_grade);
-        })
-    }
-
+<head>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+</head>
+    <svg width="1000" height="1000" id="svg1"></svg>
+    <!-- <svg width="1000" height="1000" id="svg2"></svg> -->
+    <script>
+        // create svg element
+        var svg1 = d3.select("#svg1");
+        let width = +svg1.attr("width");
+        let height = +svg1.attr("height");
     
+        // set color scale
+        let colorScale = d3.scaleThreshold()
+        .domain(["A", "B", "C", "D"])
+        .range(["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]);
+        // somehow the first color in range([]) does not show on map
+    
+        // load data from github repo
+        d3.queue()
+        .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson")
+        .await(ready1);
+    
+        // function ready
+        function ready1(error, topo) {
+            // get appropriate projection
+            let projection1 = d3.geoMercator().fitSize([width, height], topo);
+                    
+            svg1.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
+            //draw polygons
+            .attr("d", d3.geoPath().projection(projection1))
+            .style("stroke", "#5b6363")
+            .style("stroke-width", 1)
+            .attr("fill", function(d) {
+                return colorScale(d.properties.holc_grade);
+            })
+        }
+
+        // var svg2 = d3.select("#svg2");
+        // let width = +svg2.attr("width");
+        // let height = +svg2.attr("height");
+    
+        // // set color scale
+        // let colorScale = d3.scaleThreshold()
+        // .domain(["A", "B", "C", "D"])
+        // .range(["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]);
+        // // somehow the first color in range([]) does not show on map
+    
+        // // load data from github repo
+        // d3.queue()
+        // .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/Maryland_Baltimore_City_Neighborhoods.geojson")
+        // .await(ready2);
+        // // function ready
+        // function ready2(error, topo) {
+        //     // get appropriate projection
+        //     let projection2 = d3.geoMercator().fitSize([width, height], topo);
+        //     svg2.append("g")
+        //     .selectAll("path")
+        //     .data(topo.features)
+        //     .enter()
+        //     .append("path")
+        //     //draw polygons
+        //     .attr("d", d3.geoPath().projection(projection2))
+        //     .style("stroke", "#5b6363")
+        //     .style("stroke-width", 1)
+        //     .attr("fill", function(d) {
+        //         return colorScale(d.properties.holc_grade);
+        //     })
+        // }
     </script>
