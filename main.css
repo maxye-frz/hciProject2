@@ -1,0 +1,24 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url(https://fonts.googleapis.com/css?family=Lato);
+
+body {
+    font-family: "Helvectica Neue", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background: linear-gradient(-45deg, #ff7171, #fffda2, #6fd9fa, #a3ff8c);
+    background-size: 200% 200%;
+    animation: gradient 10s ease infinite;
+    
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
