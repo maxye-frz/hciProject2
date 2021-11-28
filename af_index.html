@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leaflet and D3 Map</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+
+</head>
+
+<body>
+
+    <div id="map" style="width: 900px; height: 900px"></div>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+    <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js">
+    </script>
+
+    <script>
+
+        let map = L.map('map').setView([39.2904, -76.6122], 12);
+        mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'https://api.mapbox.com/styles/v1/maxye95/ckwiq3iai1a4714nxsqezkfts/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        let tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .style("line-height", "1")
+            .style("padding", "12px")
+            .style("background", "rgba(43,43,43, 0.8)")
+            .style("color", "#fff")
+            .style("border-radius", "2px")
+            .style("word-wrap", "break-word")
+            .offset([-5, 0])
+            .html(function (d) {
+
+                // const area_description = new Map(Object.entries(d.properties.area_description_data));
+                // console.log(d.properties);
+                return "Neighborhood: " + d.properties.CSA2010 + '<br>'
+                    + "Affordability index: " + d.properties.affordm19
+            })
+
+        let mouseOver = function (d) {
+            d3.select(this)
+                .transition()
+                .duration(100)
+                .style("opacity", 1)
+                .style("stroke", "black")
+                .style("stroke-width", 2);
+        }
+
+        let mouseLeave = function (d) {
+            d3.select(this)
+                .transition()
+                .duration(100)
+                .style("stroke", "#5b6363")
+                .style("stroke-width", 1);
+        }
+
+        // some other styles: 'https://api.mapbox.com/styles/v1/maxye95/ckwiq1vp0177c14p807hd7g9p/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww'
+
+        // Add an SVG element to Leaflet’s overlay pane
+        let svg_1 = d3.select(map.getPanes().overlayPane).append("svg"),
+            g_1 = svg_1.append("g").attr("class", "leaflet-zoom-hide");
+
+        let svg_2 = d3.select(map.getPanes().overlayPane).append("svg"),
+            g_2 = svg_2.append("g").attr("class", "leaflet-zoom-hide");
+
+        svg_2.call(tip);
+
+        let keys = ['A', 'B', 'C', 'D']
+
+        let colors = ["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]
+
+        let redliningScale = d3.scaleThreshold().domain(keys).range(colors);
+
+        let colorScale = d3.scaleThreshold()
+            .domain([30, 40, 50])
+            .range(d3.schemeGreys[4]);
+
+        d3.queue()
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson")
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/Affordability_Index_-_Mortgage.geojson")
+            .await(function (error, redlining, af_index) {
+                if (error) {
+                    console.error('fetching error: ' + error);
+                } else {
+                    let transform = d3.geoTransform({ point: projectPoint }),
+                        path = d3.geoPath().projection(transform);
+                    // console.log(af_index.features)
+                    redlining_features = g_1.selectAll('path')
+                        .data(redlining.features)
+                        .enter()
+                        .append('path');
+                    af_index_features = g_2.selectAll('path')
+                        .data(af_index.features)
+                        .enter()
+                        .append('path');
+                    map.on("viewreset", reset);
+
+                    reset();
+
+                    function reset() {
+                        bounds = path.bounds(redlining);
+                        let topLeft = bounds[0],
+                            bottomRight = bounds[1];
+                        svg_1.attr("width", bottomRight[0] - topLeft[0])
+                            .attr("height", bottomRight[1] - topLeft[1])
+                            .style("left", topLeft[0] + "px")
+                            .style("top", topLeft[1] + "px");
+                        g_1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                        redlining_features.attr("d", path)
+                            .style("stroke", "#5b6363")
+                            .style("stroke-width", 0)
+                            .style("fill-opacity", 1)
+                            .attr("fill", function (d) {
+                                return redliningScale(d.properties.holc_grade);
+                            })
+                        svg_2.attr("width", bottomRight[0] - topLeft[0])
+                            .attr("height", bottomRight[1] - topLeft[1])
+                            .style("left", topLeft[0] + "px")
+                            .style("top", topLeft[1] + "px");
+                        g_2.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                        af_index_features.attr("d", path)
+                            .style("stroke", "#5b6363")
+                            .style("stroke-width", 1)
+                            .style("fill-opacity", 0.6)
+                            .attr("fill", function (d) {
+                                return colorScale(d.properties.affordm18)
+                            })
+                            .on('mouseover.highlight', mouseOver)
+                            .on('mouseover.tooltip', function(d) {
+                                tip.show(d); 
+                            })
+                            .on('mouseleave.highlight', mouseLeave)
+                            .on('mouseleave.tooltip', function(d) {
+                                tip.hide(d); 
+                            })
+                            // .on('mouseover', tip.show)
+                    }
+
+                    function projectPoint(x, y) {
+                        let point = map.latLngToLayerPoint(new L.LatLng(y, x));
+                        this.stream.point(point.x, point.y);
+                    }
+
+                }
+
+            })
+
+    </script>
+
+
+</body>
+
+</html>
