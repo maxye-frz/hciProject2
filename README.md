@@ -1,1 +1,1 @@
-# hciProject2
+# HCI Fall 2021 Project 2 - Baltimore Redlining

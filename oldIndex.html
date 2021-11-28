@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="main.css">
+    <title>Baltimore Redlining</title>
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+</head>
+
+
+<body>
+    <!--Start Banner Area -->
+	<section class="home_banner">
+		<div class="banner_inner d-flex align-items-center">
+			<div class="container" >
+				<div class="banner_content text-center">
+					<h3 class="text-uppercase">HCI Project 2</h3>
+					<h1 class="text-uppercase">Baltimore Redlining and its Lasting Impact</h1>
+					<h5 class="text-uppercase">Liam Creedon, Nanxi Ye, Kavan Bansal</h5>
+					<div class="col-lg-5">
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Banner Area-->
+
+
+	<!-- Start Project Details Area -->
+	<section class="portfolio_details_area section_gap">
+        	<div class="container">
+        		<div class="portfolio_details_inner">
+                		<!-- Begin Definition section -->
+				<div class="row">
+                   			<div class="offset-lg-1 col-lg-5">
+                        			<div class="portfolio_right_text mt-30">
+                            				<h3 class="text-uppercase">REDLINING</h3>
+                            					<p>
+									In June of 1933, a government sponsored corporation was created as a part of the New Deal named the Home Owner's Loan Corporation (HOLC). 
+									The goal of this corporation was to carry out the provisions of the Home Owners' Loan Act, that aimed to provide relief to homeowners unable to
+									finance their mortgages. Redlining is the method this organization employed to determine neighborhoods across US cities which were deemed safe or
+									hazardous for investment, using grades 'A' through 'D'.
+                            					</br>
+									The unfortunate reality of this process is that in practically all cases, neighborhoods receiving the lowest grade of 'D', and subsequently outlined and shaded
+									in red on the map, were largely populated with racial and ethnic minorities. This systemic disinvestment in these neighborhoods furthered existing
+									problems, notably racially segregating cities even more, and making it much more difficult or expensive for minorities to secure a loan and buy a home.
+								</p>
+							   	<p>
+							    	</br>
+							    	</p>
+							<h3 class="text-uppercase">THE DATA</h3>
+							    	<p>
+									Multiple sources of data were used in this project to perform our analysis. To begin, we leveraged census data from the 2010s and 2020s overlayed onto the original HOLC map from
+									<a href="https://dsl.richmond.edu/panorama/redlining/#loc=11/39.293/-76.836&city=baltimore-md"> Mapping Inequality</a>. For other data points, we utilized the
+									<a href="https://vital-signs-bniajfi.hub.arcgis.com/"> Vital Signs Open Data Portal</a> offered by the Baltimore Neighborhood Indicators Alliance.
+								</p>
+                        			</div>
+              	    			</div>
+				</div>
+				<!-- End Definition section -->
+	
+				<!-- Begin Economic section -->
+				<div class="row">
+					<div class="offset-lg-1 col-lg-5">
+                        			<div class="portfolio_right_text mt-30">
+                            				<h3 class="text-uppercase">Economic</h3>
+                            					<p> 
+                                                    The map above shows recent (2011, reported in 2015) data collected on the average household incomes in each of Baltimore’s neighborhoods. When compared to the 1937 redlining map, the lasting impacts of redlining are clear. While the South Baltimore/Inner Harbor area has been developed extensively and thus shows higher average income levels now, such investment into development has not been seen across the board. Instead, we see households in areas that were redlined like Jonestown and Oldtown continuing to have an average income of nearly 4 times less than those in areas with class A or “first grade” designations like Guilford and Homeland. 
+                                                </p>
+                                                <p>
+                                                    This difference is perhaps even more apparent in the case of the Middle East neighborhood. This neighborhood was redlined (along with adjacent neighborhoods) with a class D designation, while the Johns Hopkins Hospital in the area was exempted from such a designation. While the hospital has continued to develop and improve, average incomes in this neighborhood remain at less than half the overall Baltimore City average, and a jarring 5 times less than the Greater Roland Park neighborhood, an area containing only class A and B designated districts. This clearly highlights the impact of redlining: communities with potential continuing to be held back from developing as a result of outdated restrictions and labels.
+                                                </p>
+                        			</div>
+              	    			</div>
+              	    		</div>
+				<!-- End Economic section -->
+
+				<!-- Begin Housing section -->
+				<div class="row">
+					<div class="offset-lg-1 col-lg-5">
+                        			<div class="portfolio_right_text mt-30">
+                            				<h3 class="text-uppercase">Housing</h3>
+                            					<p>			
+                                                    The map used in our infographics displays the initial map drawn by the Home Owners Loan Corporation (HOLC) in the 1930’s, grading each residential neighborhood A B C or D from ‘first grade’ down to ‘fourth grade’. Grades coincided with approval of investments, an effort to racially segregate housing, where minorities would be denied investment requests outside of certain neighborhoods. Today, the lack of investment in these neighborhoods, most frequently having high numbers of black residents, has correlated with these neighborhoods being populated with mostly low income, racial minorities. From here, we can see similar trends of low homeownership percentages, and low affordability index, with high black population in the same poorly grades neighborhoods by the HOLC.
+								</p>
+							   	<p>
+							    	With the original design of the HOLC for relieving issues for mortgage payers, it is natural that inequality as related to housing is still seen today. When neighborhoods were graded poorly, investors and banks were less likely to give out loans (or made them too expensive) for homeowners attempting to live in these areas. Consequently, homeownership percentages, specifically houses where the owner lives in the building, today are still lower in these areas as compared to well graded neighborhoods. Not only that, but if we look at data regarding the population of these neighborhoods, we can see that poorly graded neighborhoods have a much larger percentage of black residents compared to other neighborhoods. 
+							    	</p>
+                                    <p>
+                                    Finally, we can look at the affordability index for each community statistical area. The affordability index is defined as the percentage of households that pay more than 30% of their total household income on mortgage and other housing-related expenses. Similarly to the other housing inequalities, we see that neighborhoods graded poorly by the HOLC face a higher affordability index. Whether it is due to a low income, or inability to get loans to help with mortgages, the people in these neighborhoods are still suffering inequalities stemming from nearly 90 years ago.
+                                    </p>
+							<h3 class="text-uppercase">Subsection</h3>
+							    	<p>
+								</p>
+                        			</div>
+              	    			</div>
+				</div>
+				<!-- End Housing section -->
+
+				<!-- Begin Health section -->
+				<div class="row">
+					<div class="offset-lg-1 col-lg-5">
+                        			<div class="portfolio_right_text mt-30">
+                            				<h3 class="text-uppercase">Health</h3>
+                            					<p>			
+                            					</br>
+								</p>
+							   	<p>
+							    	</br>
+							    	</p>
+							<h3 class="text-uppercase">Subsection</h3>
+							    	<p>
+								</p>
+                        			</div>
+              	    			</div>
+				</div>
+				<!-- End Health section -->
+
+				<!-- Begin Hopkins section -->
+				<div class="row">
+					<div class="offset-lg-1 col-lg-5">
+                        <div class="portfolio_right_text mt-30">
+                            <h3 class="text-uppercase">Hopkins</h3>
+                                <p>			
+                                While the surrounding area was given the lowest grading of a “D” or “fourth grade”, the Hopkins Hospital was exempted from such a rating, being marked as a “decent employment opportunity”. The visual of the Hopkins Hospital being a bright white spot in a sea of red on the HOLC’s map only furthers the perception that Hopkins can thrive at the expense of the Baltimore community while remaining somehow separate. 
+                                </p>
+                                <p>
+                                Similarly, while Hopkins was once considering relocating to Columbia, they decided not to because “it would not have had ready access to clinical material, people with whom it could experiment”. If this weren’t enough, the University has historically also demolished Black residents’ homes to make space for the resources and accommodations they need, enforcing the HOLC’s belief that these neighborhoods have good qualities, but only if the residents are removed.
+                                </p>
+                                <p>
+                                    In recent years, Hopkins has taken steps to remedy the damage the institution had caused, offering medical care for residents in the hospital’s surrounding ZIP codes. Nevertheless, the damage done decades ago is irreversible and the resulting distrust between these communities and the hospital is the consequence.
+                                </p>
+                        </div>
+                    </div>
+				</div>
+				<!-- End Hopkins section -->
+
+				<!-- Begin Analysis section -->
+				<div class="row">
+					<div class="offset-lg-1 col-lg-5">
+                        			<div class="portfolio_right_text mt-30">
+                            				<h3 class="text-uppercase">Analysis</h3>
+                            					<p>			
+                            					</br>
+								</p>
+							   	<p>
+							    	</br>
+							    	</p>
+							<h3 class="text-uppercase">Subsection</h3>
+							    	<p>
+								</p>
+                        			</div>
+              	    			</div>
+				</div>
+				<!-- End Analysis section -->
+	    		</div>
+		</div>
+	</section>
+</body>
+
+    <svg width="1000" height="1000" id="svg1"></svg>
+    <!-- <svg width="1000" height="1000" id="svg2"></svg> -->
+    <script>
+        // create svg element
+        var svg1 = d3.select("#svg1");
+        let width = +svg1.attr("width");
+        let height = +svg1.attr("height");
+    
+        // set color scale
+        let colorScale = d3.scaleThreshold()
+        .domain(["A", "B", "C", "D"])
+        .range(["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]);
+        // somehow the first color in range([]) does not show on map
+    
+        // load data from github repo
+        d3.queue()
+        .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson")
+        .await(ready1);
+    
+        // function ready
+        function ready1(error, topo) {
+            // get appropriate projection
+            let projection1 = d3.geoMercator().fitSize([width, height], topo);
+                    
+            svg1.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
+            //draw polygons
+            .attr("d", d3.geoPath().projection(projection1))
+            .style("stroke", "#5b6363")
+            .style("stroke-width", 1)
+            .attr("fill", function(d) {
+                return colorScale(d.properties.holc_grade);
+            })
+        }
+
+        // var svg2 = d3.select("#svg2");
+        // let width = +svg2.attr("width");
+        // let height = +svg2.attr("height");
+    
+        // // set color scale
+        // let colorScale = d3.scaleThreshold()
+        // .domain(["A", "B", "C", "D"])
+        // .range(["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]);
+        // // somehow the first color in range([]) does not show on map
+    
+        // // load data from github repo
+        // d3.queue()
+        // .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/Maryland_Baltimore_City_Neighborhoods.geojson")
+        // .await(ready2);
+        // // function ready
+        // function ready2(error, topo) {
+        //     // get appropriate projection
+        //     let projection2 = d3.geoMercator().fitSize([width, height], topo);
+        //     svg2.append("g")
+        //     .selectAll("path")
+        //     .data(topo.features)
+        //     .enter()
+        //     .append("path")
+        //     //draw polygons
+        //     .attr("d", d3.geoPath().projection(projection2))
+        //     .style("stroke", "#5b6363")
+        //     .style("stroke-width", 1)
+        //     .attr("fill", function(d) {
+        //         return colorScale(d.properties.holc_grade);
+        //     })
+        // }
+    </script>
