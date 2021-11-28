@@ -37,8 +37,10 @@
             .style("word-wrap", "break-word")
             .offset([-5, 0])
             .html(function (d) {
-
+                // in case the properties have integer as attribute name
                 // const area_description = new Map(Object.entries(d.properties.area_description_data));
+        
+                // uncomment console.log to see what properties are in the geo json file
                 // console.log(d.properties);
                 return "Neighborhood: " + d.properties.CSA2010 + '<br>'
                     + "Affordability index: " + d.properties.affordm19
@@ -83,8 +85,8 @@
             .range(d3.schemeGreys[4]);
 
         d3.queue()
-            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson")
-            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/Affordability_Index_-_Mortgage.geojson")
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/MDBaltimore1937.geojson")  // this is the redlining map
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/Affordability_Index_-_Mortgage.geojson")   // this is the geojson file with data
             .await(function (error, redlining, af_index) {
                 if (error) {
                     console.error('fetching error: ' + error);
@@ -96,7 +98,7 @@
                         .data(redlining.features)
                         .enter()
                         .append('path');
-                    af_index_features = g_2.selectAll('path')
+                    af_index_features = g_2.selectAll('path')  // change the feature name if you like
                         .data(af_index.features)
                         .enter()
                         .append('path');
@@ -130,7 +132,7 @@
                             .style("stroke-width", 1)
                             .style("fill-opacity", 0.6)
                             .attr("fill", function (d) {
-                                return colorScale(d.properties.affordm18)
+                                return colorScale(d.properties.affordm18)  // fills the color with corresponding data
                             })
                             .on('mouseover.highlight', mouseOver)
                             .on('mouseover.tooltip', function(d) {
