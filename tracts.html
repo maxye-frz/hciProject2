@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leaflet and D3 Map</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+
+</head>
+
+<body>
+
+    <div id="map" style="width: 900px; height: 900px"></div>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script> -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+    <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js"></script>
+
+    <script>
+
+        let map = L.map('map').setView([39.2904, -76.6122], 12);
+        mapLink =
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'https://api.mapbox.com/styles/v1/maxye95/ckwiq3iai1a4714nxsqezkfts/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        // some other styles: 'https://api.mapbox.com/styles/v1/maxye95/ckwiq1vp0177c14p807hd7g9p/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww'
+
+        // Add an SVG element to Leaflet’s overlay pane
+        let svg = d3.select(map.getPanes().overlayPane).append("svg"),
+            g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-5, 0])
+            .html(function (d) {
+                // console.log(d.properties.CT10);
+                // console.log(map.get());
+                // var dataRow = map.get(d.properties.name);
+                // if (dataRow) {
+                //     console.log(dataRow);
+                //     return dataRow.states + ": " + dataRow.mortality;
+                // } else {
+                //     console.log("no dataRow", d);
+                //     return d.properties.name + ": No data.";
+                // }
+            })
+
+
+        d3.queue()
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/Baltimore_Tracts.geojson")
+            .defer(d3.csv, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/CHDB_data_tract_MD_v13_0.csv")
+            .await(function (error, geoShape, data) {
+                if (error) {
+                    console.error('fetching error: ' + error);
+                } else {
+
+                    //  create a d3.geo.path to convert GeoJSON to SVG
+                    let transform = d3.geoTransform({ point: projectPoint }),
+                        path = d3.geoPath().projection(transform);
+
+                    // create path elements for each of the features
+                    d3_features = g.selectAll("path")
+                        .data(geoShape.features)
+                        .enter().append("path");
+
+                    let tract = geoShape.properties
+
+                    console.log(tract)
+
+                    data.forEach(function (d, i) {
+                        tract.forEach(function (e, j) {
+
+                            // console.log(e.CT10)
+                            
+
+                            if (d.tract_code == e.CT10 && d.metric_name == 'Life expectancy') {
+                                e.data_display = d.est
+                            }
+                        })
+                    })
+
+
+                    map.on("viewreset", reset);
+
+                    reset();
+
+                    // fit the SVG element to leaflet's map layer
+                    function reset() {
+
+
+                        bounds = path.bounds(geoShape);
+
+                        // console.log(geoShape);
+
+                        let topLeft = bounds[0],
+                            bottomRight = bounds[1];
+
+                        svg.attr("width", bottomRight[0] - topLeft[0])
+                            .attr("height", bottomRight[1] - topLeft[1])
+                            .style("left", topLeft[0] + "px")
+                            .style("top", topLeft[1] + "px");
+
+                        g.attr("transform", "translate(" + -topLeft[0] + ","
+                            + -topLeft[1] + ")");
+
+                        // initialize the path data	
+                        // d3_features.attr("d", path)
+                        // 	.style("fill-opacity", 0.7)
+                        // 	.attr('fill','blue');
+                        d3_features.attr("d", path)
+                            .style("stroke", "#5b6363")
+                            .style("stroke-width", 1)
+                            .style("fill-opacity", 0.2)
+                            .on('mouseover', tip.show)
+                            .on('mouseout', tip.hide)
+
+                    }
+
+                    // Use Leaflet to implement a D3 geometric transformation.
+                    function projectPoint(x, y) {
+                        var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+                        this.stream.point(point.x, point.y);
+                    }
+                }
+            });
+
+
+        // d3.json("https://raw.githubusercontent.com/maxye-frz/hciProject2/main/Baltimore_Tracts.geojson", function (geoShape) {
+
+        //     //  create a d3.geo.path to convert GeoJSON to SVG
+        //     let transform = d3.geo.transform({ point: projectPoint }),
+        //         path = d3.geo.path().projection(transform);
+
+        //     // create path elements for each of the features
+        //     d3_features = g.selectAll("path")
+        //         .data(geoShape.features)
+        //         .enter().append("path");
+
+        //     map.on("viewreset", reset);
+
+        //     reset();
+
+        //     // fit the SVG element to leaflet's map layer
+        //     function reset() {
+
+
+        //         bounds = path.bounds(geoShape);
+
+        //         // console.log(geoShape);
+
+        //         let topLeft = bounds[0],
+        //             bottomRight = bounds[1];
+
+        //         svg.attr("width", bottomRight[0] - topLeft[0])
+        //             .attr("height", bottomRight[1] - topLeft[1])
+        //             .style("left", topLeft[0] + "px")
+        //             .style("top", topLeft[1] + "px");
+
+        //         g.attr("transform", "translate(" + -topLeft[0] + ","
+        //             + -topLeft[1] + ")");
+
+        //         // initialize the path data	
+        //         // d3_features.attr("d", path)
+        //         // 	.style("fill-opacity", 0.7)
+        //         // 	.attr('fill','blue');
+        //         d3_features.attr("d", path)
+        //             .style("stroke", "#5b6363")
+        //             .style("stroke-width", 1)
+        //             .style("fill-opacity", 0.2)
+
+        //     }
+
+        //     // Use Leaflet to implement a D3 geometric transformation.
+        //     function projectPoint(x, y) {
+        //         var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+        //         this.stream.point(point.x, point.y);
+        //     }
+
+        // })
+
+    </script>
+
+
+</body>
+
+</html>

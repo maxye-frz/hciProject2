@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Leaflet and D3 Map</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+
+</head>
+
+<body>
+
+    <div id="map" style="width: 900px; height: 900px"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+
+    <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js">
+    </script>
+
+    <script>
+
+        let map = L.map('map').setView([39.2904, -76.6122], 12);
+        mapLink =
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'https://api.mapbox.com/styles/v1/maxye95/ckwiq3iai1a4714nxsqezkfts/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        // some other styles: 'https://api.mapbox.com/styles/v1/maxye95/ckwiq1vp0177c14p807hd7g9p/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww'
+
+        // Add an SVG element to Leaflet’s overlay pane
+        let svg = d3.select(map.getPanes().overlayPane).append("svg"),
+            g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+
+        let keys = ['A', 'B', 'C', 'D']
+
+        let colors = ["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]
+
+        let colorScale = d3.scale.threshold().domain(keys).range(colors);
+
+
+        d3.json("https://raw.githubusercontent.com/maxye-frz/hciProject2/main/CSA_NSA_Tracts.topo.json", function (geoShape) {
+
+            geojson = topojson.feature(geoShape, geoShape.objects.CSA_NSA_Tracts);
+
+            // console.log(geojson.features);
+
+            //  create a d3.geo.path to convert GeoJSON to SVG
+            let transform = d3.geo.transform({ point: projectPoint }),
+                path = d3.geo.path().projection(transform);
+
+            // create path elements for each of the features
+            d3_features = g.selectAll("path")
+                .data(geojson.features)
+                .enter().append("path");
+
+            map.on("viewreset", reset);
+
+            reset();
+
+            // fit the SVG element to leaflet's map layer
+            function reset() {
+
+                bounds = path.bounds(geojson);
+
+                console.log(geojson);
+
+                let topLeft = bounds[0],
+                    bottomRight = bounds[1];
+
+                svg.attr("width", bottomRight[0] - topLeft[0])
+                    .attr("height", bottomRight[1] - topLeft[1])
+                    .style("left", topLeft[0] + "px")
+                    .style("top", topLeft[1] + "px");
+
+                g.attr("transform", "translate(" + -topLeft[0] + ","
+                    + -topLeft[1] + ")");
+
+                // initialize the path data	
+                // d3_features.attr("d", path)
+                // 	.style("fill-opacity", 0.7)
+                // 	.attr('fill','blue');
+                d3_features.attr("d", path)
+                    .style("stroke", "#5b6363")
+                    .style("stroke-width", 1)
+                    .style("fill-opacity", 0.2)
+
+            }
+
+            // Use Leaflet to implement a D3 geometric transformation.
+            function projectPoint(x, y) {
+                var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+                this.stream.point(point.x, point.y);
+            }
+
+        })
+
+    </script>
+
+    
+</body>
+
+</html>
