@@ -39,7 +39,7 @@
 
 <body>
 
-    <div id="map" style="width: 900px; height: 900px"></div>
+    <div id="map" style="width: 750px; height: 750px"></div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css' rel='stylesheet' type='text/css' /> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
@@ -51,6 +51,8 @@
 
 
     <script>
+
+        let playing = false;
 
         let map = L.map('map').setView([39.2904, -76.6122], 12);
         mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
@@ -66,16 +68,20 @@
                 icon: 'fa fa-play',
                 title: 'play map',
                 onClick: function (control) {
-                    console.log('play')
+                    // console.log('play')
                     // scatteredMarkerMap.addLayer(markerGroup);
+                    playing = true;
+                    console.log(playing);
                     control.state('pause');
                 }
             }, {
                 stateName: 'pause',
                 icon: 'fa fa-pause',
                 onClick: function (control) {
-                    console.log('pause')
+                    // console.log('pause')
                     // scatteredMarkerMap.removeLayer(markerGroup);
+                    playing = false;
+                    console.log(playing);
                     control.state('play');
                 },
                 title: 'remove markers'
@@ -116,28 +122,6 @@
 
         info.addTo(map);
 
-
-        let tip = d3.tip()
-            .attr('class', 'd3-tip')
-            .style("line-height", "1")
-            .style("padding", "12px")
-            .style("background", "rgba(43,43,43, 0.8)")
-            .style("color", "#fff")
-            .style("border-radius", "2px")
-            .style("word-wrap", "break-word")
-            .offset([-5, 0])
-            .html(function (d) {
-                // in case the properties have integer as attribute name
-                // const area_description = new Map(Object.entries(d.properties.area_description_data));
-
-                // uncomment console.log to see what properties are in the geo json file
-                // console.log(d.properties);
-
-                // edit the tool tip content here
-                return "Neighborhood: " + d.properties.CSA2010 + '<br>'
-                    + "Affordability index: " + d.properties.affordm19
-            })
-
         let mouseOver = function (d) {
             d3.select(this)
                 .transition()
@@ -164,7 +148,7 @@
         let svg_2 = d3.select(map.getPanes().overlayPane).append("svg"),
             g_2 = svg_2.append("g").attr("class", "leaflet-zoom-hide");
 
-        svg_2.call(tip);
+        // svg_2.call(tip);
 
         let keys = ['A', 'B', 'C', 'D']
 
@@ -176,7 +160,8 @@
             .domain([0, 30, 40, 50])  // change threshold
             .range(d3.schemeGreys[5]);
 
-        console.log(d3.schemeGreys[5]);
+        // console.log(d3.schemeGreys[5]);
+
 
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/MDBaltimore1937.geojson")  // this is the redlining map
@@ -221,28 +206,24 @@
                             .style("left", topLeft[0] + "px")
                             .style("top", topLeft[1] + "px");
                         g_2.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                        
                         af_index_features.attr("d", path)
+                            .transition().duration(750)
                             .style("stroke", "#5b6363")
                             .style("stroke-width", 1)
                             .style("fill-opacity", 0.6)
                             .attr("fill", function (d) {
                                 return colorScale(d.properties.affordm18)  // fills the color with corresponding data
-                            })
-                            .on('mouseover.highlight', mouseOver)
-                            // .on('mouseover.tooltip', function (d) {
-                            //     tip.show(d);
-                            // })
+                            });
+                            
+                        af_index_features.on('mouseover.highlight', mouseOver)
                             .on('mouseover.data', function (d) {
                                 info.update(d.properties)
                             })
                             .on('mouseleave.highlight', mouseLeave)
-                            // .on('mouseleave.tooltip', function (d) {
-                            //     tip.hide(d);
-                            // })
                             .on('mouseleave.data', function (d) {
                                 info.update();
                             })
-                        // .on('mouseover', tip.show)
                     }
 
                     function projectPoint(x, y) {
