@@ -157,7 +157,7 @@
         let redliningScale = d3.scaleThreshold().domain(keys).range(colors);
 
         let colorScale = d3.scaleThreshold()
-            .domain([0, 30, 40, 50])  // change threshold
+            .domain([0, 40, 55, 75])  // change threshold
             .range(d3.schemeGreys[5]);
 
         // console.log(d3.schemeGreys[5]);
@@ -213,7 +213,7 @@
                             .style("stroke-width", 1)
                             .style("fill-opacity", 0.6)
                             .attr("fill", function (d) {
-                                return colorScale(d.properties.affordm18)  // fills the color with corresponding data
+                                return colorScale(d.properties.ownroc18)  // fills the color with corresponding data
                             });
                             
                         af_index_features.on('mouseover.highlight', mouseOver)
