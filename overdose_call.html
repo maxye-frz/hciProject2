@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Overdose Calls and Redlining Map</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+
+</head>
+
+<style>
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+
+    .legend {
+        line-height: 18px;
+        color: #555;
+    }
+
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+</style>
+
+<body>
+
+    <div id="map" style="width: 750px; height: 750px"></div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css' rel='stylesheet' type='text/css' /> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+    <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
+
+    <script>
+
+        let playing = false;
+
+        let map = L.map('map').setView([39.2904, -76.6122], 12);
+        mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'https://api.mapbox.com/styles/v1/maxye95/ckwiq3iai1a4714nxsqezkfts/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+        }).addTo(map);
+
+        // let toggle = L.easyButton({
+        //     states: [{
+        //         stateName: 'play',
+        //         icon: 'fa fa-play',
+        //         title: 'play map',
+        //         onClick: function (control) {
+        //             // console.log('play')
+        //             // scatteredMarkerMap.addLayer(markerGroup);
+        //             playing = true;
+        //             console.log(playing);
+        //             control.state('pause');
+        //         }
+        //     }, {
+        //         stateName: 'pause',
+        //         icon: 'fa fa-pause',
+        //         onClick: function (control) {
+        //             // console.log('pause')
+        //             // scatteredMarkerMap.removeLayer(markerGroup);
+        //             playing = false;
+        //             console.log(playing);
+        //             control.state('play');
+        //         },
+        //         title: 'remove markers'
+        //     }]
+        // });
+        // toggle.addTo(map);
+
+        let legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend')
+
+            div.innerHTML = '<i style="background:' + '#cccccc' + '"></i> ' + '< 10' + '<br>'
+                + '<i style="background:' + '#969696' + '"></i> ' + '10-15' + '<br>'
+                + '<i style="background:' + '#636363' + '"></i> ' + '15-20' + '<br>'
+                + '<i style="background:' + '#252525' + '"></i> ' + '> 20'
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+        let info = L.control();
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        info.update = function (props) {
+            this._div.innerHTML = '<h4>Neighborhood and Number of Overdose Calls for Service per 1,000 Residents</h4>' + (props ?
+                '<b>' + props.CSA2010 + '</b><br />' + props.overd18
+                : 'Hover over a neighborhood');
+        };
+
+        info.addTo(map);
+
+        let mouseOver = function (d) {
+            d3.select(this)
+                .transition()
+                .duration(100)
+                .style("opacity", 1)
+                .style("stroke", "black")
+                .style("stroke-width", 2);
+        }
+
+        let mouseLeave = function (d) {
+            d3.select(this)
+                .transition()
+                .duration(100)
+                .style("stroke", "#5b6363")
+                .style("stroke-width", 1);
+        }
+
+        // some other styles: 'https://api.mapbox.com/styles/v1/maxye95/ckwiq1vp0177c14p807hd7g9p/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww'
+
+        // Add an SVG element to Leaflet’s overlay pane
+        let svg_1 = d3.select(map.getPanes().overlayPane).append("svg"),
+            g_1 = svg_1.append("g").attr("class", "leaflet-zoom-hide");
+
+        let svg_2 = d3.select(map.getPanes().overlayPane).append("svg"),
+            g_2 = svg_2.append("g").attr("class", "leaflet-zoom-hide");
+
+        // svg_2.call(tip);
+
+        let keys = ['A', 'B', 'C', 'D']
+
+        let colors = ["#FFFFFF", "#83a85d", "#73aab1", "#d0cd71", "#c39598"]
+
+        let redliningScale = d3.scaleThreshold().domain(keys).range(colors);
+
+        let colorScale = d3.scaleThreshold()
+            .domain([0, 2, 10, 20])  // change threshold
+            .range(d3.schemeGreys[5]);
+
+        // console.log(d3.schemeGreys[5]);
+
+
+        d3.queue()
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/MDBaltimore1937.geojson")  // this is the redlining map
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/Overdose_Calls.geojson")   // this is the geojson file with data
+            .await(function (error, redlining, overdose_calls) {
+                if (error) {
+                    console.error('fetching error: ' + error);
+                } else {
+                    let transform = d3.geoTransform({ point: projectPoint }),
+                        path = d3.geoPath().projection(transform);
+                    // console.log(af_index.features)
+                    redlining_features = g_1.selectAll('path')
+                        .data(redlining.features)
+                        .enter()
+                        .append('path');
+                    overdose_calls_features = g_2.selectAll('path')  // change the feature name if you like
+                        .data(overdose_calls.features)
+                        .enter()
+                        .append('path');
+                    map.on("viewreset", reset);
+                    reset();
+
+                    function reset() {
+                        bounds = path.bounds(redlining);
+                        let topLeft = bounds[0],
+                            bottomRight = bounds[1];
+                        svg_1.attr("width", bottomRight[0] - topLeft[0])
+                            .attr("height", bottomRight[1] - topLeft[1])
+                            .style("left", topLeft[0] + "px")
+                            .style("top", topLeft[1] + "px");
+                        g_1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                        redlining_features.attr("d", path)
+                            .style("stroke", "#5b6363")
+                            .style("stroke-width", 0)
+                            .style("fill-opacity", 1)
+                            .attr("fill", function (d) {
+                                return redliningScale(d.properties.holc_grade);
+                            })
+                        svg_2.attr("width", bottomRight[0] - topLeft[0])
+                            .attr("height", bottomRight[1] - topLeft[1])
+                            .style("left", topLeft[0] + "px")
+                            .style("top", topLeft[1] + "px");
+                        g_2.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                        
+                        overdose_calls_features.attr("d", path)
+                            .transition().duration(750)
+                            .style("stroke", "#5b6363")
+                            .style("stroke-width", 1)
+                            .style("fill-opacity", 0.6)
+                            .attr("fill", function (d) {
+                                return colorScale(d.properties.overd18)  // fills the color with corresponding data
+                            });
+                            
+                        overdose_calls_features.on('mouseover.highlight', mouseOver)
+                            .on('mouseover.data', function (d) {
+                                info.update(d.properties)
+                            })
+                            .on('mouseleave.highlight', mouseLeave)
+                            .on('mouseleave.data', function (d) {
+                                info.update();
+                            })
+                    }
+
+                    function projectPoint(x, y) {
+                        let point = map.latLngToLayerPoint(new L.LatLng(y, x));
+                        this.stream.point(point.x, point.y);
+                    }
+
+                }
+
+            })
+
+    </script>
+
+
+</body>
+
+</html>
