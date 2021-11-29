@@ -100,7 +100,7 @@
         let colorScale = d3.scaleThreshold().domain(keys).range(colors);
 
 
-        d3.json("https://raw.githubusercontent.com/maxye-frz/hciProject2/main/MDBaltimore1937.geojson", function (geoShape) {
+        d3.json("https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/MDBaltimore1937.geojson", function (geoShape) {
 
             //  create a d3.geo.path to convert GeoJSON to SVG
             let transform = d3.geoTransform({ point: projectPoint }),
