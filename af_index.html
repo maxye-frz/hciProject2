@@ -8,14 +8,47 @@
 
 </head>
 
+<style>
+    .info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+    }
+
+    .info h4 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+
+    .legend {
+        line-height: 18px;
+        color: #555;
+    }
+
+    .legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+</style>
+
 <body>
 
     <div id="map" style="width: 900px; height: 900px"></div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css' rel='stylesheet' type='text/css' /> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
-    <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js">
-    </script>
+    <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
+
 
     <script>
 
@@ -26,6 +59,63 @@
             attribution: '&copy; ' + mapLink + ' Contributors',
             maxZoom: 18,
         }).addTo(map);
+
+        let toggle = L.easyButton({
+            states: [{
+                stateName: 'play',
+                icon: 'fa fa-play',
+                title: 'play map',
+                onClick: function (control) {
+                    console.log('play')
+                    // scatteredMarkerMap.addLayer(markerGroup);
+                    control.state('pause');
+                }
+            }, {
+                stateName: 'pause',
+                icon: 'fa fa-pause',
+                onClick: function (control) {
+                    console.log('pause')
+                    // scatteredMarkerMap.removeLayer(markerGroup);
+                    control.state('play');
+                },
+                title: 'remove markers'
+            }]
+        });
+        toggle.addTo(map);
+
+        let legend = L.control({ position: 'bottomright' });
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend')
+
+            div.innerHTML = '<i style="background:' + '#cccccc' + '"></i> ' + '< 30' + '<br>'
+                + '<i style="background:' + '#969696' + '"></i> ' + '30 - 40' + '<br>'
+                + '<i style="background:' + '#636363' + '"></i> ' + '< 40-50' + '<br>'
+                + '<i style="background:' + '#252525' + '"></i> ' + '> 50'
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+        let info = L.control();
+
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        // method that we will use to update the control based on feature properties passed
+        info.update = function (props) {
+            this._div.innerHTML = '<h4>Neighborhood and Affordability Index</h4>' + (props ?
+                '<b>' + props.CSA2010 + '</b><br />' + props.affordm18
+                : 'Hover over a state');
+        };
+
+        info.addTo(map);
+
 
         let tip = d3.tip()
             .attr('class', 'd3-tip')
@@ -39,7 +129,7 @@
             .html(function (d) {
                 // in case the properties have integer as attribute name
                 // const area_description = new Map(Object.entries(d.properties.area_description_data));
-        
+
                 // uncomment console.log to see what properties are in the geo json file
                 // console.log(d.properties);
 
@@ -83,8 +173,10 @@
         let redliningScale = d3.scaleThreshold().domain(keys).range(colors);
 
         let colorScale = d3.scaleThreshold()
-            .domain([30, 40, 50])  // change threshold
-            .range(d3.schemeGreys[4]);
+            .domain([0, 30, 40, 50])  // change threshold
+            .range(d3.schemeGreys[5]);
+
+        console.log(d3.schemeGreys[5]);
 
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/MDBaltimore1937.geojson")  // this is the redlining map
@@ -137,14 +229,20 @@
                                 return colorScale(d.properties.affordm18)  // fills the color with corresponding data
                             })
                             .on('mouseover.highlight', mouseOver)
-                            .on('mouseover.tooltip', function(d) {
-                                tip.show(d); 
+                            // .on('mouseover.tooltip', function (d) {
+                            //     tip.show(d);
+                            // })
+                            .on('mouseover.data', function (d) {
+                                info.update(d.properties)
                             })
                             .on('mouseleave.highlight', mouseLeave)
-                            .on('mouseleave.tooltip', function(d) {
-                                tip.hide(d); 
+                            // .on('mouseleave.tooltip', function (d) {
+                            //     tip.hide(d);
+                            // })
+                            .on('mouseleave.data', function (d) {
+                                info.update();
                             })
-                            // .on('mouseover', tip.show)
+                        // .on('mouseover', tip.show)
                     }
 
                     function projectPoint(x, y) {
