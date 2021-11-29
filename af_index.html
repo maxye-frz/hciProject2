@@ -83,7 +83,7 @@
         let redliningScale = d3.scaleThreshold().domain(keys).range(colors);
 
         let colorScale = d3.scaleThreshold()
-            .domain([30, 40, 50])
+            .domain([30, 40, 50])  // change threshold
             .range(d3.schemeGreys[4]);
 
         d3.queue()
