@@ -62,32 +62,32 @@
             maxZoom: 18,
         }).addTo(map);
 
-        let toggle = L.easyButton({
-            states: [{
-                stateName: 'play',
-                icon: 'fa fa-play',
-                title: 'play map',
-                onClick: function (control) {
-                    // console.log('play')
-                    // scatteredMarkerMap.addLayer(markerGroup);
-                    playing = true;
-                    console.log(playing);
-                    control.state('pause');
-                }
-            }, {
-                stateName: 'pause',
-                icon: 'fa fa-pause',
-                onClick: function (control) {
-                    // console.log('pause')
-                    // scatteredMarkerMap.removeLayer(markerGroup);
-                    playing = false;
-                    console.log(playing);
-                    control.state('play');
-                },
-                title: 'remove markers'
-            }]
-        });
-        toggle.addTo(map);
+        // let toggle = L.easyButton({
+        //     states: [{
+        //         stateName: 'play',
+        //         icon: 'fa fa-play',
+        //         title: 'play map',
+        //         onClick: function (control) {
+        //             // console.log('play')
+        //             // scatteredMarkerMap.addLayer(markerGroup);
+        //             playing = true;
+        //             console.log(playing);
+        //             control.state('pause');
+        //         }
+        //     }, {
+        //         stateName: 'pause',
+        //         icon: 'fa fa-pause',
+        //         onClick: function (control) {
+        //             // console.log('pause')
+        //             // scatteredMarkerMap.removeLayer(markerGroup);
+        //             playing = false;
+        //             console.log(playing);
+        //             control.state('play');
+        //         },
+        //         title: 'remove markers'
+        //     }]
+        // });
+        // toggle.addTo(map);
 
         let legend = L.control({ position: 'bottomright' });
 
