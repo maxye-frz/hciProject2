@@ -96,6 +96,9 @@
                           <p class="u-align-justify u-text u-text-1"> HOME OWNERS LOAN ACT</p>
                           <p class="u-align-left u-text u-text-2"> From&nbsp;<a href="https://livingnewdeal.org/glossary/home-owners-loan-act-1933/" class="u-active-none u-border-none u-btn u-button-style u-hover-none u-none u-text-palette-1-base u-btn-1">Living the New Deal</a>: On June 13, 1933, President Roosevelt signed the Home Owners’ Loan Act into law. The purpose of the law was to “provide emergency relief with respect to home mortgage indebtedness, to refinance home mortgages, to extend relief to the owners occupied by them and who are unable to amortize their debt elsewhere…” The law also ordered the creation of a Home Owners’ Loan Corporation (HOLC) to carry out the provisions of the act.
                           </p>
+                          <br>
+                          <br>
+                          <br>
                           <p class="u-align-justify u-text u-text-3">DATA</p>
                           <p class="u-align-left u-text u-text-4"> Multiple sources of data were used in this project to perform our analysis. To begin, we leveraged census data from the 2010s and 2020s overlayed onto the original HOLC map from&nbsp;<a href="https://dsl.richmond.edu/panorama/redlining/#loc=11/39.293/-76.836&amp;city=baltimore-md" class="u-active-none u-border-none u-btn u-button-style u-hover-none u-none u-text-palette-1-base u-btn-2">Mapping Inequality</a>. For other data points, we utilized the&nbsp;<a href="https://vital-signs-bniajfi.hub.arcgis.com/" class="u-active-none u-border-none u-btn u-button-style u-hover-none u-none u-text-palette-1-base u-btn-3">Vital Signs Open Data Portal</a>&nbsp;offered by the Baltimore Neighborhood Indicators Alliance.&nbsp;<br>&nbsp; &nbsp; &nbsp; &nbsp; The following maps overlays the 1937 HOLC Baltimore Area map with GEOjson data from the 2010's by community statistical areas.
                           </p>
@@ -159,7 +162,7 @@
               <div class="u-container-layout u-valign-middle-xs u-container-layout-2" src="">
                 <div class="u-clearfix u-custom-html u-custom-html-1">
                   <style></style>
-                  <p> ADD MAP STUFF HERE.</p>
+                  <iframe src="income.html" height="800" width="800" style="border:none;" title="Median Household Income"></iframe>
                 </div>
                 <div class="u-clearfix u-custom-html u-custom-html-2">
                   <style></style>
@@ -232,11 +235,27 @@
               <div class="u-container-layout u-valign-bottom u-container-layout-1">
                 <h2 class="u-align-center-lg u-align-center-md u-align-center-xl u-custom-font u-font-montserrat u-text u-text-1">Health</h2>
                 <p class="u-align-left-lg u-align-left-md u-align-left-xl u-text u-text-2"> &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<b>
-                    <span style="font-weight: 400;">With the original design of the HOLC for relieving issues for mortgage payers, it is natural that inequality as related to housing is still seen today. When neighborhoods were graded poorly, investors and banks were less likely to give out loans (or made them too expensive) for homeowners attempting to live in these areas.&nbsp;</span>
+                    <span style="font-weight: 400;">The health implications of housing disparities are prominent after 9 decades. The map includes the average life
+                    expectancy of residents in each community statistical area collected in 2018. The neighborhoods with top 3 life
+                    expectancy are Cross-Country/Cheswolde (84.7), Greater Roland Park/Poplar Hill (82.7), North Baltimore/Guilford/Homeland
+                    (82.6). These are the areas with all grade A or B areas in the original redlining map. The neighborhood with the lowest
+                    life expectancy is Downtown/Seton Hill (63.2). It is clear that there is a relationship between life expectancy and
+                    neighborhood grades: in general, regions graded C or D in 1937 have lower life expectancy compared to other regions. The
+                    difference between the grade A and grade D area is as high as 20 years.&nbsp;</span>
                     <br>
-                    <br>&nbsp; &nbsp; &nbsp; &nbsp; <span style="font-weight: 400;">Consequently, homeownership percentages, specifically houses where the owner lives in the building, today are still lower in these areas as compared to well graded neighborhoods. Not only that, but if we look at data regarding the population of these neighborhoods, we can see that poorly graded neighborhoods tend to have a much higher percentage of black residents compared to other neighborhoods.&nbsp;<br>
-                      <br>&nbsp; &nbsp; &nbsp; &nbsp; Finally, we can look at the affordability index for each community statistical area. The affordability index is defined as the percentage of households that pay more than 30% of their total household income on mortgage and other housing-related expenses.
-                    </span>&nbsp;</b>Looking at CSA data from 2018, we can see Downtown/Seton hall with 47% of the population falling into this category, compared to North Baltimore/Guilford seeing just 26% of the poulation. It is worth noting that it is not a direct relationship for all redlined districts, as we can see outliers such as Fells Point or the Inner Harbor/Fed Hill. Part of this is most likely due to the commercialization of certain areas of downtown.
+                    <br>&nbsp; &nbsp; &nbsp; &nbsp; <span style="font-weight: 400;">In addition to life expectancy, we also graphed the overdose calls data. This map reveals the relationship between drug
+                    usage and neighborhoods. According to CDC, the age-adjusted rate of overdose deaths is 20.7 per 100,000 in 2018. On the
+                    map, the green areas represent neighborhoods with less than 2 overdose calls per 1,000 residents, and almost every green
+                    zone is aligned with grade A areas from the redlining map. The only exception is South Baltimore, which despite its D
+                    grade in 1930s, has low overdose calls data. All grade D areas have higher than 10 overdose calls.&nbsp;</span>
+                    <br>&nbsp; &nbsp; &nbsp; &nbsp; The crime rate map shows the relationship between the number of violent crime rates per 1000 residents and the redlining
+                    grades. Most of the crime happens near the inner circle area of Baltimore city. The north suburb areas have much less
+                    crime rates. From the three maps above, we can see the disparities of living conditions mostly remain. One thing to
+                    point out is that some areas show better statistics. For example, neighborhoods like South Baltimore and Inner Harbor
+                    areas are categorized grade D originally, but they have higher life expectancy, lower overdose calls rates and lower
+                    crime rates compared to other grade D regions, or even grade C regions. We think the reason is commercialization and
+                    business activity in these regions, which proves that policy and financial support can make a difference
+                    </span>&nbsp;</b>
                 </p>
               </div>
             </div>
@@ -244,7 +263,7 @@
               <div class="u-container-layout u-valign-middle-xs u-container-layout-2" src="">
                 <div class="u-clearfix u-custom-html u-custom-html-1">
                   <style></style>
-                  <p>ADD MAP STUFF HERE</p>
+                  <iframe src="life_exp.html" height="750" width="750" style="border:none;" title="redlining map"></iframe>
                 </div>
               </div>
             </div>
@@ -260,7 +279,7 @@
               <div class="u-container-layout u-container-layout-1">
                 <div class="u-clearfix u-custom-html u-custom-html-1">
                   <style></style>
-                  <p>ADD MAP STUFF HERE.</p>
+                  <iframe src="overdose_call.html" height="750" width="750" style="border:none;" title="redlining map"></iframe>
                 </div>
               </div>
             </div>
@@ -268,7 +287,7 @@
               <div class="u-container-layout u-valign-middle-xs u-container-layout-2" src="">
                 <div class="u-clearfix u-custom-html u-custom-html-2">
                   <style></style>
-                  <p>ADD MAP STUFF HERE</p>
+                  <iframe src="crime_rate.html" height="750" width="750" style="border:none;" title="redlining map"></iframe>
                 </div>
               </div>
             </div>
