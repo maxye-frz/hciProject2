@@ -95,9 +95,9 @@
 
             var div = L.DomUtil.create('div', 'info legend')
 
-            div.innerHTML = '<i style="background:' + '#cccccc' + '"></i> ' + '< 10' + '<br>'
-                + '<i style="background:' + '#969696' + '"></i> ' + '10-15' + '<br>'
-                + '<i style="background:' + '#636363' + '"></i> ' + '15-20' + '<br>'
+            div.innerHTML = '<i style="background:' + '#cccccc' + '"></i> ' + '< 2' + '<br>'
+                + '<i style="background:' + '#969696' + '"></i> ' + '2-10' + '<br>'
+                + '<i style="background:' + '#636363' + '"></i> ' + '10-20' + '<br>'
                 + '<i style="background:' + '#252525' + '"></i> ' + '> 20'
 
             return div;
@@ -158,7 +158,7 @@
 
         let colorScale = d3.scaleThreshold()
             .domain([0, 2, 10, 20])  // change threshold
-            .range(colors);
+            .range(d3.schemeGreys[5]);
 
         // console.log(d3.schemeGreys[5]);
 
@@ -210,7 +210,7 @@
                             .transition().duration(750)
                             .style("stroke", "#5b6363")
                             .style("stroke-width", 1)
-                            .style("fill-opacity", 0.6)
+                            .style("fill-opacity", 0.5)
                             .attr("fill", function (d) {
                                 return colorScale(d.properties.overd18)  // fills the color with corresponding data
                             });

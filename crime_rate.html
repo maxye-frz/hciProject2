@@ -96,9 +96,9 @@
             var div = L.DomUtil.create('div', 'info legend')
 
             div.innerHTML = '<i style="background:' + '#cccccc' + '"></i> ' + '< 10' + '<br>'
-                + '<i style="background:' + '#969696' + '"></i> ' + '10-15' + '<br>'
-                + '<i style="background:' + '#636363' + '"></i> ' + '15-20' + '<br>'
-                + '<i style="background:' + '#252525' + '"></i> ' + '> 20'
+                + '<i style="background:' + '#969696' + '"></i> ' + '10-20' + '<br>'
+                + '<i style="background:' + '#636363' + '"></i> ' + '20-30' + '<br>'
+                + '<i style="background:' + '#252525' + '"></i> ' + '> 30'
 
             return div;
         };
@@ -157,7 +157,7 @@
         let redliningScale = d3.scaleThreshold().domain(keys).range(colors);
 
         let colorScale = d3.scaleThreshold()
-            .domain([0, 5, 10, 20])  // change threshold
+            .domain([0, 10, 20, 30])  // change threshold
             .range(d3.schemeGreys[5]);
 
         // console.log(d3.schemeGreys[5]);
