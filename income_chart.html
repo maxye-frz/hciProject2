@@ -13,7 +13,7 @@
 <script>
 
     // set the dimensions and margins of the graph
-    var margin = {top: 30, right: 30, bottom: 90, left: 80},
+    var margin = {top: 20, right: 30, bottom: 100, left: 80},
         width = 460 - margin.left - margin.right,
         height = 450 - margin.top - margin.bottom;
     
@@ -71,8 +71,8 @@
         .text("Disparity($)");
     // Animation
     svg.selectAll("rect")
-      .transition()
-      .duration(800)
+      .transition(1000)
+      .duration(2000)
       .attr("y", function(d) { return y(d.Difference); })
       .attr("height", function(d) { return height - y(d.Difference); })
       .delay(function(d,i){console.log(i) ; return(i*100)})
@@ -81,7 +81,7 @@
 
     svg.append("text")
         .attr("x", width/2)
-        .attr("y", -10)
+        .attr("y", -5)
         .attr("text-anchor", "middle")
         .style("font-size", "16px")
         .text("Median Household Income Gap of Baltimore Neighborhoods");
