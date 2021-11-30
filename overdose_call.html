@@ -54,12 +54,12 @@
 
         let playing = false;
 
-        let map = L.map('map').setView([39.2904, -76.6122], 12);
+        let map = L.map('map').setView([39.2904, -76.6122], 11);
         mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer(
             'https://api.mapbox.com/styles/v1/maxye95/ckwiq3iai1a4714nxsqezkfts/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoibWF4eWU5NSIsImEiOiJja3dpcHp4cHowaGxlMnVxdnRmZ3luazN1In0.4anlDfXDfJdTd61hR3twww', {
             attribution: '&copy; ' + mapLink + ' Contributors',
-            maxZoom: 17,
+            maxZoom: 18,
         }).addTo(map);
 
         // let toggle = L.easyButton({
