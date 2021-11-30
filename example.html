@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Life Expectancy and Redlining Map</title>
+    <title>Affordability Index and Redlining Map</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
 
@@ -39,7 +39,7 @@
 
 <body>
 
-    <div id="map" style="width: 700px; height: 700px"></div>
+    <div id="map" style="width: 900px; height: 900px"></div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- <link href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css' rel='stylesheet' type='text/css' /> -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
@@ -52,8 +52,6 @@
 
     <script>
 
-        let playing = false;
-
         let map = L.map('map').setView([39.2904, -76.6122], 12);
         mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
         L.tileLayer(
@@ -62,32 +60,28 @@
             maxZoom: 18,
         }).addTo(map);
 
-        // let toggle = L.easyButton({
-        //     states: [{
-        //         stateName: 'play',
-        //         icon: 'fa fa-play',
-        //         title: 'play map',
-        //         onClick: function (control) {
-        //             // console.log('play')
-        //             // scatteredMarkerMap.addLayer(markerGroup);
-        //             playing = true;
-        //             console.log(playing);
-        //             control.state('pause');
-        //         }
-        //     }, {
-        //         stateName: 'pause',
-        //         icon: 'fa fa-pause',
-        //         onClick: function (control) {
-        //             // console.log('pause')
-        //             // scatteredMarkerMap.removeLayer(markerGroup);
-        //             playing = false;
-        //             console.log(playing);
-        //             control.state('play');
-        //         },
-        //         title: 'remove markers'
-        //     }]
-        // });
-        // toggle.addTo(map);
+        let toggle = L.easyButton({
+            states: [{
+                stateName: 'play',
+                icon: 'fa fa-play',
+                title: 'play map',
+                onClick: function (control) {
+                    console.log('play')
+                    // scatteredMarkerMap.addLayer(markerGroup);
+                    control.state('pause');
+                }
+            }, {
+                stateName: 'pause',
+                icon: 'fa fa-pause',
+                onClick: function (control) {
+                    console.log('pause')
+                    // scatteredMarkerMap.removeLayer(markerGroup);
+                    control.state('play');
+                },
+                title: 'remove markers'
+            }]
+        });
+        toggle.addTo(map);
 
         let legend = L.control({ position: 'bottomright' });
 
@@ -95,10 +89,10 @@
 
             var div = L.DomUtil.create('div', 'info legend')
 
-            div.innerHTML = '<i style="background:' + '#cccccc' + '"></i> ' + '< 70' + '<br>'
-                + '<i style="background:' + '#969696' + '"></i> ' + '70-75' + '<br>'
-                + '<i style="background:' + '#636363' + '"></i> ' + '75-80' + '<br>'
-                + '<i style="background:' + '#252525' + '"></i> ' + '> 80'
+            div.innerHTML = '<i style="background:' + '#cccccc' + '"></i> ' + '< 30' + '<br>'
+                + '<i style="background:' + '#969696' + '"></i> ' + '30 - 40' + '<br>'
+                + '<i style="background:' + '#636363' + '"></i> ' + '< 40-50' + '<br>'
+                + '<i style="background:' + '#252525' + '"></i> ' + '> 50'
 
             return div;
         };
@@ -115,12 +109,34 @@
 
         // method that we will use to update the control based on feature properties passed
         info.update = function (props) {
-            this._div.innerHTML = '<h4>Neighborhood and Life Expectancy</h4>' + (props ?
-                '<b>' + props.CSA2010 + '</b><br />' + props.lifexp18
-                : 'Hover over a neighborhood');
+            this._div.innerHTML = '<h4>Neighborhood and Affordability Index</h4>' + (props ?
+                '<b>' + props.CSA2010 + '</b><br />' + props.affordm18
+                : 'Hover over a state');
         };
 
         info.addTo(map);
+
+
+        let tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .style("line-height", "1")
+            .style("padding", "12px")
+            .style("background", "rgba(43,43,43, 0.8)")
+            .style("color", "#fff")
+            .style("border-radius", "2px")
+            .style("word-wrap", "break-word")
+            .offset([-5, 0])
+            .html(function (d) {
+                // in case the properties have integer as attribute name
+                // const area_description = new Map(Object.entries(d.properties.area_description_data));
+
+                // uncomment console.log to see what properties are in the geo json file
+                // console.log(d.properties);
+
+                // edit the tool tip content here
+                return "Neighborhood: " + d.properties.CSA2010 + '<br>'
+                    + "Affordability index: " + d.properties.affordm19
+            })
 
         let mouseOver = function (d) {
             d3.select(this)
@@ -148,7 +164,7 @@
         let svg_2 = d3.select(map.getPanes().overlayPane).append("svg"),
             g_2 = svg_2.append("g").attr("class", "leaflet-zoom-hide");
 
-        // svg_2.call(tip);
+        svg_2.call(tip);
 
         let keys = ['A', 'B', 'C', 'D']
 
@@ -157,16 +173,15 @@
         let redliningScale = d3.scaleThreshold().domain(keys).range(colors);
 
         let colorScale = d3.scaleThreshold()
-            .domain([0, 70, 75, 80])  // change threshold
+            .domain([0, 30, 40, 50])  // change threshold
             .range(d3.schemeGreys[5]);
 
-        // console.log(d3.schemeGreys[5]);
-
+        console.log(d3.schemeGreys[5]);
 
         d3.queue()
             .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/MDBaltimore1937.geojson")  // this is the redlining map
-            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/Life_Expectancy.geojson")   // this is the geojson file with data
-            .await(function (error, redlining, life_exp) {
+            .defer(d3.json, "https://raw.githubusercontent.com/maxye-frz/hciProject2/main/data/Affordability_Index_-_Mortgage.geojson")   // this is the geojson file with data
+            .await(function (error, redlining, af_index) {
                 if (error) {
                     console.error('fetching error: ' + error);
                 } else {
@@ -177,11 +192,12 @@
                         .data(redlining.features)
                         .enter()
                         .append('path');
-                    life_exp_features = g_2.selectAll('path')  // change the feature name if you like
-                        .data(life_exp.features)
+                    af_index_features = g_2.selectAll('path')  // change the feature name if you like
+                        .data(af_index.features)
                         .enter()
                         .append('path');
                     map.on("viewreset", reset);
+
                     reset();
 
                     function reset() {
@@ -205,24 +221,28 @@
                             .style("left", topLeft[0] + "px")
                             .style("top", topLeft[1] + "px");
                         g_2.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-                        
-                        life_exp_features.attr("d", path)
-                            .transition().duration(750)
+                        af_index_features.attr("d", path)
                             .style("stroke", "#5b6363")
                             .style("stroke-width", 1)
                             .style("fill-opacity", 0.6)
                             .attr("fill", function (d) {
-                                return colorScale(d.properties.lifexp18)  // fills the color with corresponding data
-                            });
-                            
-                        life_exp_features.on('mouseover.highlight', mouseOver)
+                                return colorScale(d.properties.affordm18)  // fills the color with corresponding data
+                            })
+                            .on('mouseover.highlight', mouseOver)
+                            // .on('mouseover.tooltip', function (d) {
+                            //     tip.show(d);
+                            // })
                             .on('mouseover.data', function (d) {
                                 info.update(d.properties)
                             })
                             .on('mouseleave.highlight', mouseLeave)
+                            // .on('mouseleave.tooltip', function (d) {
+                            //     tip.hide(d);
+                            // })
                             .on('mouseleave.data', function (d) {
                                 info.update();
                             })
+                        // .on('mouseover', tip.show)
                     }
 
                     function projectPoint(x, y) {
